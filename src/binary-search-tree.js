@@ -7,8 +7,10 @@ const { Node } = require('../extensions/list-tree.js');
 * using Node from extensions
 */
 
-/* ########################################################################################################
-  #### задача решалась на основании теории https://webdevblog.ru/dvoichnoe-derevo-poiska-na-javascript/ #### */
+/*##########################################################################################################
+  #### задача решалась на основании теории https://webdevblog.ru/dvoichnoe-derevo-poiska-na-javascript/ #### 
+  ##########################################################################################################*/
+
 class BinarySearchTree {
   constructor() {
     this.mainRoot = null;
@@ -43,15 +45,14 @@ class BinarySearchTree {
     const node = this.mainRoot;
     let newNode = new Node(data);
 
-    // является ли узел, который мы пытаемся добавить, первым в дереве
-    //т.е. если какое либо значение у атрибута root
+    // является ли узел, который мы пытаемся добавить, первым в дереве (т.е. если какое либо значение у root)
     if (node === null) {
       this.mainRoot = newNode;
       return;
     } else {
       //Если первое условие не выполняется тогда нужно добавить узел в соответствующую позицию (слева или справа)
       //используем вспомогательный метод insertNode
-      return this.insertNode(node, newNode); // метод-помощник
+      return this.insertNode(node, newNode);
     }
   }
 
@@ -73,16 +74,6 @@ class BinarySearchTree {
     return currentRoot;
   }
 
-  minNode(node) {
-    let currentRoot = node;
-
-    while (currentRoot.left) {
-      currentRoot = currentRoot.left;
-    }
-
-    return currentRoot.data;
-  }
-
   remove(data) {
     this.mainRoot = removeNode(this.mainRoot, data);
 
@@ -91,7 +82,7 @@ class BinarySearchTree {
 
       //если данные равны корневому элементу
       if (data === node.data) {
-        //...и нет левой и правой ветки
+        //...и нет левой и правой ветки - возвращаем null
         if (!node.left && !node.right) return null;
 
         //...и нет левой, то идем по правой
