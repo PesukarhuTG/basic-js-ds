@@ -51,23 +51,20 @@ class BinarySearchTree {
     } else {
       //Если первое условие не выполняется тогда нужно добавить узел в соответствующую позицию (слева или справа)
       //используем вспомогательный метод insertNode
-      return this.insertNode(node, newNode); // helper method
+      return this.insertNode(node, newNode); // метод-помощник
     }
   }
 
   has(data) {
-    //task: returns true if node with the data exists in the tree and false otherwise
     let currentRoot = this.mainRoot;
     while (currentRoot) {
       if (data === currentRoot.data) return true;
-      if (data === 1 || data === 2 || data === 6 || data === 128) return true;
       currentRoot = (data < currentRoot.data) ? currentRoot.left : currentRoot.right;
     }
     return false;
   }
 
   find(data) {
-    //task: returns node with the data if node with the data exists in the tree and null otherwise
     let currentRoot = this.mainRoot;
     while (currentRoot.data !== data) {
       currentRoot = (data < currentRoot.data) ? currentRoot.left : currentRoot.right;
@@ -87,47 +84,51 @@ class BinarySearchTree {
   }
 
   remove(data) {
-    //task: removes node with the data from the tree if node with the data exists
-    this.mainRoot = this.removeNode(this.mainRoot, data); // helper method
-  }
+    this.mainRoot = removeNode(this.mainRoot, data);
 
-  removeNode(node, data) {
-    if (node === null) {
-      return null;
-      // если данные, которые нужно удалить, меньше, чем данные корня, переходим к левому поддереву
-    } else if (data < node.data) {
-      node.left = this.removeNode(node.left, data);
-      return node;
-      // если данные, которые нужно удалить, больше, чем данные корня, переходим к правому поддереву
-    } else if (data > node.data) {
-      node.right = this.removeNode(node.right, data);
-      return node;
-      // если данные такие как данные корня, удаляем узел
-    } else {
-      // удаляем узел без потомков (листовой узел (leaf) или крайний)
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
+    function removeNode(node, data) {
+      if (!node) return null;
+
+      //если данные равны корневому элементу
+      if (data === node.data) {
+        //...и нет левой и правой ветки
+        if (!node.left && !node.right) return null;
+
+        //...и нет левой, то идем по правой
+        if (!node.left) {
+          node = node.right;
+          return node;
+        }
+        //...и нет правой, то идем по левой
+        if (!node.right) {
+          node = node.left;
+          return node;
+        }
+        //...и есть обе ветки
+        if (node.left && node.right) {
+          let currentRoot = node.right;
+
+          while (currentRoot.left) {
+            currentRoot = currentRoot.left;
+          }
+
+          node.data = currentRoot.data;
+          node.right = removeNode(node.right, currentRoot.data);
+          return node;
+        }
+        //если данные меньше корневого элемента, то ведем удаление по левой ветке
+      } else if (data < node.data) {
+        node.left = removeNode(node.left, data);
+      } else {
+        //если данные больше корневого элемента, то ведем удаление по правой ветке
+        node.right = removeNode(node.right, data);
       }
-      // удаляем узел с одним потомком
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-      // удаляем узел с двумя потомками
-      // minNode правого поддерева хранится в новом узле
-      let newNode = this.minNode(node.right);
-      node.data = newNode.data;
-      node.right = this.removeNode(node.right, newNode.data);
       return node;
     }
   }
 
+
   min() {
-    //task: returns minimal value stored in the tree (or null if tree has no nodes)
     let currentRoot = this.mainRoot;
     while (currentRoot.left !== null) {
       currentRoot = currentRoot.left;
@@ -136,7 +137,6 @@ class BinarySearchTree {
   }
 
   max() {
-    //task: returns maximal value stored in the tree (or null if tree has no nodes)
     let currentRoot = this.mainRoot;
     while (currentRoot.right !== null) {
       currentRoot = currentRoot.right;
