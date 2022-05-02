@@ -23,32 +23,36 @@ const { ListNode } = require('../extensions/list-node.js');
  * }
  */
 function removeKFromList(l, k) {
-  let currentNode = l;
-  let deletedNode = null;
+  let currentListNode = l; //для перемещения по списку
+  let prevElem = null; //предыдущий элемент null, тк его не существует
 
-  while (currentNode) {
-    //перебираем все узлы
-    //...если значение не равно указанному, то просто сдвигаем:
-    if (currentNode.value !== k) {
-      //помеченным узлом становится текущий
-      deletedNode = currentNode;
-      // а текущий перезаписываем на следующий узел
-      currentNode = currentNode.next;
+  const toString = () => {
+    console.log(JSON.stringify(currentListNode));
+  }
 
-      //...если значение равно указанному, то удаляем узел:
+  //пока мы не дошли до конца списка
+  while (currentListNode) {
+    //ЕСЛИ НЕ НАШЛИ СОВПАДЕНИЕ
+    if (currentListNode.value !== k) {
+      prevElem = currentListNode; //предыдущий узел передвигаем на место текущего
+      currentListNode = currentListNode.next; //текущий узел передвигается на следующий
+      //toString();
     } else {
-      if (deletedNode === null) {
-        l = l.next;
-        currentNode = l;
+      //ЕСЛИ СОВПАДЕНИЕ НАШЛИ И НАХОДИМСЯ В НАЧАЛЕ СПИСКА
+      if (prevElem === null) {
+        l = l.next; //начальный список сдвигаем на позицию вперед
+        currentListNode = l; //обновляем значение current на новое
+        //toString();
       } else {
-        // перезаписываем, чтобы узел через один стал помеченным узлом.
-        deletedNode.next = deletedNode.next.next;
-        //а текущим стал следующий узел
-        currentNode = currentNode.next;
+        //ЕСЛИ СОВПАДЕНИЕ НАШЛИ И НАХОДИМСЯ НЕ В НАЧАЛЕ СПИСКА
+        prevElem.next = currentListNode.next; //предыдущему элементу даем ссылку на next текущего (как бы перешагивая)
+        currentListNode = currentListNode.next; //текущий узел передвигается на следующий
+        //toString();
       }
     }
   }
-  return l
+  //console.log(JSON.stringify(l));
+  return l;
 }
 
 module.exports = {
